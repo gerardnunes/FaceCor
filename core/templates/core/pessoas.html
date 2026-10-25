@@ -1,0 +1,20 @@
+{% extends "core/base.html" %}
+{% block title %}Pessoas{% endblock %}
+{% block content %}
+<div class="head"><div><h1>Pessoas</h1><span class="muted">Cadastro e biometria facial</span></div>
+  <a class="btn primary" href="{% url 'pessoa_nova' %}">+ Cadastrar pessoa</a></div>
+<form method="get" class="filters"><div><label for="q">Buscar</label><input type="search" id="q" name="q" value="{{ q }}" placeholder="Nome ou matrícula"></div><div><button class="btn" type="submit">Buscar</button></div></form>
+<div class="card"><table>
+  <tr><th></th><th>Nome</th><th>Matrícula</th><th>Setor / cargo</th><th>Status</th><th></th></tr>
+  {% for p in pessoas %}<tr>
+    <td>{% if p.foto_ref %}<img class="thumb" src="{% url 'midia' 'pessoa' p.pk %}" alt="" loading="lazy">{% else %}<span class="thumb"></span>{% endif %}</td>
+    <td>{{ p.nome }}</td><td class="mono">{{ p.matricula }}</td><td>{{ p.setor }}{% if p.cargo %} · <span class="muted">{{ p.cargo }}</span>{% endif %}</td>
+    <td>{% if p.ativo %}<span class="badge in">Ativo</span>{% else %}<span class="badge">Inativo</span>{% endif %}</td>
+    <td class="right">
+      <a class="btn sm" href="{% url 'pessoa_editar' p.pk %}">Editar</a>
+      <form class="inline" method="post" action="{% url 'pessoa_alternar' p.pk %}">{% csrf_token %}<button class="btn sm" type="submit">{% if p.ativo %}Desativar{% else %}Ativar{% endif %}</button></form>
+      {% if user.eh_master %}<form class="inline" method="post" action="{% url 'pessoa_excluir' p.pk %}" data-confirm="Excluir {{ p.nome }} e todos os dados biométricos? Isso não pode ser desfeito.">{% csrf_token %}<button class="btn sm danger" type="submit">Excluir</button></form>{% endif %}
+    </td></tr>
+  {% empty %}<tr><td colspan="6" class="muted">Nenhuma pessoa encontrada.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

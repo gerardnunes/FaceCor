@@ -1,0 +1,33 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}{% if pessoa %}Editar pessoa{% else %}Nova pessoa{% endif %}{% endblock %}
+{% block head %}<script src="{% static 'core/camera.js' %}" defer></script>{% endblock %}
+{% block content %}
+<div class="head"><div><h1>{% if pessoa %}Editar {{ pessoa.nome }}{% else %}Cadastrar pessoa{% endif %}</h1>
+  <span class="muted">Colete o consentimento da pessoa antes de cadastrar o rosto (LGPD).</span></div></div>
+<form method="post" enctype="multipart/form-data" class="grid g2">{% csrf_token %}
+  <div class="card">
+    {% if form.non_field_errors %}{% for e in form.non_field_errors %}<div class="err">{{ e }}</div>{% endfor %}{% endif %}
+    {% for f in form %}{% if f.name != "foto" %}
+      {% if f.name == "ativo" %}<div class="check"><label>{{ f }} {{ f.label }}</label></div>
+      {% else %}<label for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}{% endif %}
+      {% for e in f.errors %}<div class="err">{{ e }}</div>{% endfor %}
+    {% endif %}{% endfor %}
+    <div class="row"><button class="btn primary" type="submit">Salvar</button><a class="btn" href="{% url 'pessoas' %}">Cancelar</a></div>
+  </div>
+  <div class="card" id="enroll"><h2>Foto do rosto</h2>
+    <div class="cam">
+      <video class="hidden" autoplay playsinline muted></video>
+      <img class="snap {% if not pessoa.foto_ref %}hidden{% endif %}" alt="Foto" {% if pessoa.foto_ref %}src="{% url 'midia' 'pessoa' pessoa.pk %}"{% endif %}>
+    </div>
+    <div class="row">
+      <button class="btn" type="button" id="cam-start">Usar câmera</button>
+      <button class="btn primary hidden" type="button" id="cam-snap">Capturar foto</button>
+    </div>
+    <div class="err" id="cam-aviso"></div>
+    <label for="id_foto">Ou envie um arquivo</label>{{ form.foto }}
+    <div class="help">{{ form.foto.help_text }}{% if pessoa %} Deixe vazio para manter a foto atual.{% endif %}</div>
+    {% for e in form.foto.errors %}<div class="err">{{ e }}</div>{% endfor %}
+  </div>
+</form>
+{% endblock %}

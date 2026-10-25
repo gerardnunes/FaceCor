@@ -1,0 +1,11 @@
+{
+	{$CADDY_GLOBAL}
+}
+
+{$DOMAIN:localhost} {
+	encode gzip
+	request_body {
+		max_size 10MB
+	}
+	reverse_proxy web:8000
+}

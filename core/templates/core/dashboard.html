@@ -1,0 +1,28 @@
+{% extends "core/base.html" %}
+{% block title %}Painel{% endblock %}
+{% block content %}
+<div class="head"><div><h1>Painel</h1><span class="muted">Visão do dia no Centro de Operações Remotas</span></div>
+  <a class="btn primary" href="{% url 'quiosque' %}">Abrir quiosque</a></div>
+{% if user.eh_master and not aws.ativo %}
+<ul class="msgs"><li class="error">A AWS S3 ainda não está ativa — as fotos estão sendo guardadas só neste servidor. <a href="{% url 'aws' %}">Configurar agora</a></li></ul>
+{% endif %}
+<div class="grid g4">
+  <div class="card stat in"><b>{{ entradas }}</b><span>Entradas hoje</span></div>
+  <div class="card stat out"><b>{{ saidas }}</b><span>Saídas hoje</span></div>
+  <div class="card stat"><b>{{ dentro_n }}</b><span>Dentro agora (de {{ total_pessoas }} ativos)</span></div>
+  <div class="card stat warn"><b>{{ desconhecidos }}</b><span>Não identificados hoje</span></div>
+</div>
+<div class="grid g2 mt">
+  <div class="card"><h2>Últimos registros</h2>
+    <table><tr><th>Hora</th><th>Pessoa</th><th>Tipo</th></tr>
+    {% for r in recentes %}<tr><td class="mono">{{ r.momento|date:"d/m H:i:s" }}</td><td>{{ r.nome_exibicao }}</td>
+      <td>{% if r.desconhecido %}<span class="badge bad">Não identificado</span>{% elif r.tipo == "E" %}<span class="badge in">Entrada</span>{% else %}<span class="badge out">Saída</span>{% endif %}</td></tr>
+    {% empty %}<tr><td colspan="3" class="muted">Nenhum registro ainda.</td></tr>{% endfor %}</table>
+    <p class="small"><a href="{% url 'registros' %}">Ver todos →</a></p>
+  </div>
+  <div class="card"><h2>Quem está dentro</h2>
+    {% for p in dentro %}<div class="row-line">{{ p.nome }} <span class="muted small">{{ p.setor }}</span></div>
+    {% empty %}<p class="muted">Ninguém no momento.</p>{% endfor %}
+  </div>
+</div>
+{% endblock %}

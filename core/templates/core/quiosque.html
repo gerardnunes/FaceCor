@@ -1,0 +1,24 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}Quiosque{% endblock %}
+{% block head %}<script src="{% static 'core/quiosque.js' %}" defer></script>{% endblock %}
+{% block body %}
+<div class="kiosk" id="kiosk" data-url="{% url 'api_reconhecer' %}">
+  <div class="kbar">
+    <div class="brand"><i>C</i><span>COR · Controle de acesso</span></div>
+    <div class="kclock" id="relogio">--:--:--</div>
+    <div>
+      {% if user.pode_gerir %}<a class="btn sm" href="{% url 'dashboard' %}">Painel</a>{% endif %}
+      <form class="inline" method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="btn sm" type="submit">Sair</button></form>
+    </div>
+  </div>
+  <div class="kmain">
+    <div class="cam" id="cam"><video id="video" autoplay playsinline muted></video></div>
+    <div class="kres" id="res">
+      <span class="tag" id="tag">Iniciando…</span>
+      <div class="big" id="nome">Iniciando câmera…</div>
+      <div class="muted" id="sub">Permita o acesso à câmera quando o navegador pedir.</div>
+    </div>
+  </div>
+</div>
+{% endblock %}

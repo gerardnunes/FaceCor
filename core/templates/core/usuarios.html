@@ -1,0 +1,13 @@
+{% extends "core/base.html" %}
+{% block title %}Usuários{% endblock %}
+{% block content %}
+<div class="head"><div><h1>Usuários</h1><span class="muted">Quem acessa o sistema</span></div><a class="btn primary" href="{% url 'usuario_novo' %}">+ Novo usuário</a></div>
+<div class="card"><table>
+  <tr><th>Usuário</th><th>Nome</th><th>Papel</th><th>Status</th><th></th></tr>
+  {% for u in usuarios %}<tr><td class="mono">{{ u.username }}</td><td>{{ u.first_name }}</td><td>{{ u.get_papel_display }}</td>
+    <td>{% if u.is_active %}<span class="badge in">Ativo</span>{% else %}<span class="badge bad">Inativo</span>{% endif %}</td>
+    <td class="right"><a class="btn sm" href="{% url 'usuario_senha' u.pk %}">Redefinir senha</a>
+      <form class="inline" method="post" action="{% url 'usuario_alternar' u.pk %}">{% csrf_token %}<button class="btn sm" type="submit">{% if u.is_active %}Desativar{% else %}Ativar{% endif %}</button></form></td></tr>
+  {% endfor %}</table></div>
+<p class="muted small">Papéis: <b>Master</b> (tudo, inclusive AWS), <b>Gestor</b> (pessoas e registros), <b>Operador</b> (apenas o quiosque).</p>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "core/base.html" %}
+{% block title %}Configuração inicial{% endblock %}
+{% block body %}
+<div class="center"><div class="card narrow">
+  <div class="brand"><i>C</i><span>Configuração inicial</span></div>
+  <h1>Criar login master</h1>
+  <p class="muted">O token aparece no log do servidor (<span class="mono">docker compose logs web</span>). Depois você conecta a AWS S3 por aqui mesmo, sem editar código.</p>
+  <form method="post">{% csrf_token %}
+    {% for f in form %}
+      <label for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}
+      {% for e in f.errors %}<div class="err">{{ e }}</div>{% endfor %}
+    {% endfor %}
+    <div class="row"><button class="btn primary" type="submit">Criar e continuar</button></div>
+  </form>
+</div></div>
+{% endblock %}

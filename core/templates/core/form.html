@@ -1,0 +1,14 @@
+{% extends "core/base.html" %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block content %}
+<div class="head"><div><h1>{{ titulo }}</h1></div></div>
+<div class="card narrow">
+  <form method="post">{% csrf_token %}
+    {% for f in form %}
+      <label for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}
+      {% for e in f.errors %}<div class="err">{{ e }}</div>{% endfor %}
+    {% endfor %}
+    <div class="row"><button class="btn primary" type="submit">Salvar</button><a class="btn" href="{% url voltar %}">Cancelar</a></div>
+  </form>
+</div>
+{% endblock %}
