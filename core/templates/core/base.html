@@ -15,7 +15,7 @@
 {% block body %}
 <div class="shell">
   <nav class="side">
-    <div class="brand"><i>C</i><span>COR · Acesso</span></div>
+    <div class="brand"><i></i><span>COR · Acesso</span></div>
     {% with n=request.resolver_match.url_name %}
     {% if user.pode_gerir %}<a class="nav {% if n == 'dashboard' %}on{% endif %}" href="{% url 'dashboard' %}">Painel</a>{% endif %}
     <a class="nav {% if n == 'quiosque' %}on{% endif %}" href="{% url 'quiosque' %}">Quiosque</a>
