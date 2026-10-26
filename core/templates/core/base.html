@@ -1,41 +1,84 @@
 <!doctype html>
 <html lang="pt-br">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="csrf" content="{{ csrf_token }}">
-<meta name="color-scheme" content="dark">
-<title>{% block title %}COR Acesso{% endblock %} · COR</title>
-{% load static %}
-<link rel="stylesheet" href="{% static 'core/app.css' %}">
-<script src="{% static 'core/app.js' %}" defer></script>
-{% block head %}{% endblock %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="COR · Sistema de Controle de Acesso">
+
+  <title>{% block title %}COR Acesso{% endblock %} · COR</title>
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'core/app.css' %}">
+  <script src="{% static 'core/app.js' %}" defer></script>
+  {% block head %}{% endblock %}
 </head>
 <body>
 {% block body %}
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
 <div class="shell">
-  <nav class="side">
-    <div class="brand"><i>C</i><span>COR · Acesso</span></div>
-    {% with n=request.resolver_match.url_name %}
-    {% if user.pode_gerir %}<a class="nav {% if n == 'dashboard' %}on{% endif %}" href="{% url 'dashboard' %}">Painel</a>{% endif %}
-    <a class="nav {% if n == 'quiosque' %}on{% endif %}" href="{% url 'quiosque' %}">Quiosque</a>
-    {% if user.pode_gerir %}
-    <a class="nav {% if n == 'pessoas' or n == 'pessoa_nova' or n == 'pessoa_editar' %}on{% endif %}" href="{% url 'pessoas' %}">Pessoas</a>
-    <a class="nav {% if n == 'registros' %}on{% endif %}" href="{% url 'registros' %}">Registros</a>
-    {% endif %}
-    {% if user.eh_master %}
-    <a class="nav {% if n == 'aws' %}on{% endif %}" href="{% url 'aws' %}">AWS S3</a>
-    <a class="nav {% if 'usuario' in n %}on{% endif %}" href="{% url 'usuarios' %}">Usuários</a>
-    <a class="nav {% if n == 'auditoria' %}on{% endif %}" href="{% url 'auditoria' %}">Auditoria</a>
-    {% endif %}
+  <nav class="side" aria-label="Navegação principal">
+    <div class="brand"><i aria-hidden="true">C</i><span>COR · Acesso</span></div>
+
+    {% with n=request.resolver_match.url_name|default:'' %}
+      {% if user.pode_gerir %}
+        <a class="nav {% if n == 'dashboard' %}on{% endif %}"
+           href="{% url 'dashboard' %}"
+           {% if n == 'dashboard' %}aria-current="page"{% endif %}>Painel</a>
+      {% endif %}
+
+      <a class="nav {% if n == 'quiosque' %}on{% endif %}"
+         href="{% url 'quiosque' %}"
+         {% if n == 'quiosque' %}aria-current="page"{% endif %}>Quiosque</a>
+
+      {% if user.pode_gerir %}
+        <a class="nav {% if n in 'pessoas,pessoa_nova,pessoa_editar' %}on{% endif %}"
+           href="{% url 'pessoas' %}"
+           {% if n in 'pessoas,pessoa_nova,pessoa_editar' %}aria-current="page"{% endif %}>Pessoas</a>
+
+        <a class="nav {% if n == 'registros' %}on{% endif %}"
+           href="{% url 'registros' %}"
+           {% if n == 'registros' %}aria-current="page"{% endif %}>Registros</a>
+      {% endif %}
+
+      {% if user.eh_master %}
+        <a class="nav {% if n == 'aws' %}on{% endif %}"
+           href="{% url 'aws' %}"
+           {% if n == 'aws' %}aria-current="page"{% endif %}>AWS S3</a>
+
+        <a class="nav {% if 'usuario' in n %}on{% endif %}"
+           href="{% url 'usuarios' %}"
+           {% if 'usuario' in n %}aria-current="page"{% endif %}>Usuários</a>
+
+        <a class="nav {% if n == 'auditoria' %}on{% endif %}"
+           href="{% url 'auditoria' %}"
+           {% if n == 'auditoria' %}aria-current="page"{% endif %}>Auditoria</a>
+      {% endif %}
     {% endwith %}
+
     <div class="sp"></div>
-    <div class="who small"><b>{{ user.get_username }}</b><br><span class="muted">{{ user.get_papel_display }}</span>
-      <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="btn sm" type="submit">Sair</button></form>
+
+    <div class="who small">
+      <b>{{ user.get_username }}</b><br>
+      <span class="muted">{{ user.get_papel_display }}</span>
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button class="btn sm" type="submit">Sair</button>
+      </form>
     </div>
   </nav>
-  <main>
-    {% if messages %}<ul class="msgs">{% for m in messages %}<li class="{{ m.tags }}">{{ m }}</li>{% endfor %}</ul>{% endif %}
+
+  <main id="conteudo">
+    {% if messages %}
+      <ul class="msgs" role="status" aria-live="polite">
+        {% for m in messages %}
+          <li class="{{ m.tags }}">{{ m }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
     {% block content %}{% endblock %}
   </main>
 </div>
