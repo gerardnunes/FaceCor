@@ -64,12 +64,6 @@ pre.pol{background:#0a0e13;border:1px solid var(--border);border-radius:var(--ra
   padding:0 10px 16px;font-weight:700;letter-spacing:.04em;
   border-bottom:1px solid var(--border);margin-bottom:10px;
 }
-.brand i{
-  width:28px;height:28px;border-radius:6px;
-  background:linear-gradient(135deg,var(--accent),var(--blue));
-  display:grid;place-items:center;
-  color:var(--accent-ink);font-style:normal;font-weight:800;font-size:14px;
-}
 .brand span{font:600 12.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase}
 
 .side a.nav{
@@ -246,7 +240,7 @@ input[type=checkbox]{accent-color:var(--accent);margin-right:8px}
 {% block body %}
 <div class="shell">
   <nav class="side">
-    <div class="brand"><i>C</i><span>COR · Acesso</span></div>
+    <div class="brand"><span>COR · Acesso</span></div>
     {% with n=request.resolver_match.url_name %}
     {% if user.pode_gerir %}<a class="nav {% if n == 'dashboard' %}on{% endif %}" href="{% url 'dashboard' %}">Painel</a>{% endif %}
     <a class="nav {% if n == 'quiosque' %}on{% endif %}" href="{% url 'quiosque' %}">Quiosque</a>
