@@ -5,4 +5,5 @@ __pycache__/
 *.pyc
 .venv/
 models_onnx/*.onnx
+!models_onnx/face_detection_yunet_2023mar.onnx
 core/migrations/0*.py
