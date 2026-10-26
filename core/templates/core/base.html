@@ -9,7 +9,7 @@
 {% load static %}
 <style>
 /* ============================================================
-   COR · Acesso — CSS embutido
+   COR · Acesso — CSS embutido (self-contained)
    ============================================================ */
 :root{
   --bg:#0b0e12;
@@ -328,9 +328,25 @@ input[type=checkbox]{accent-color:var(--sig);margin-right:8px}
 </head>
 <body>
 
-{% block body %}
+{#
+  ─────────────────────────────────────────────────────────────
+  ESTRUTURA À PROVA DE ERRO:
+
+  • O shell inteiro (topbar + main) vive em `{% block shell %}`.
+    Filhos NÃO podem destruí-lo com `{% block body %}`.
+
+  • `{% block body %}` existe apenas para compatibilidade com
+    templates filhos antigos que ainda o usam. Seu conteúdo é
+    renderizado DENTRO de <main class="stage"> — o layout fica.
+
+  • Todo filho novo deve usar `{% block content %}` (recomendado)
+    ou `{% block body %}` (legado). Ambos funcionam.
+  ─────────────────────────────────────────────────────────────
+#}
+
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
 
+{% block shell %}
 <div class="ops">
 
   <header class="bar">
@@ -383,10 +399,15 @@ input[type=checkbox]{accent-color:var(--sig);margin-right:8px}
       </ul>
     {% endif %}
 
+    {# compatibilidade: filhos antigos que usam block body #}
+    {% block body %}{% endblock %}
+
+    {# caminho recomendado para novos filhos #}
     {% block content %}{% endblock %}
   </main>
 
 </div>
 {% endblock %}
+
 </body>
 </html>
